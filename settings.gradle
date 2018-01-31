@@ -1,0 +1,6 @@
+rootProject.name = 'IntegrationTestImpactAnalysis'
+
+include 'GitDiff'
+include 'JavaDiff'
+include 'TiaPlayer'
+

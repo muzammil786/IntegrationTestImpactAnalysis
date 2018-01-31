@@ -1,0 +1,14 @@
+dependencies {
+    compile project(':GitDiff')
+    compile project(':JavaDiff')
+
+    compile 'org.apache.logging.log4j:log4j-1.2-api:' + versionProps['log4j.version']
+    compile 'org.apache.logging.log4j:log4j-iostreams:' + versionProps['log4j.version']
+    compile 'commons-io:commons-io:' + versionProps['commons-io.version']
+    compile 'commons-lang:commons-lang:' + versionProps['commons-lang.version']
+    
+    compile 'com.jcraft:jsch:' + versionProps['jsch.version']
+
+    // test
+    testCompile 'junit:junit:' + versionProps['junit.version']
+}

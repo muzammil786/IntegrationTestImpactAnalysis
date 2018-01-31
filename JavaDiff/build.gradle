@@ -1,0 +1,88 @@
+// https://github.com/jpace/diffj.git
+/**
+ * DiffJ compares Java files based on their code, without regard to formatting, organization, comments, or whitespace. Differences are reported as to the precise type of change.
+
+ DiffJ was designed for comparing code when refactoring and reformatting, with the differences narrowed to the extent possible, thus isolating changes.
+ */
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+    }
+}
+
+plugins {
+    id 'com.jfrog.bintray' version '1.3.1'
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'pmd'
+
+group = 'org.incava'
+version = '1.6.3'
+mainClassName = 'org.incava.diffj.app.DiffJ'
+ext {
+    pkgName = 'diffj'
+    pkgDesc = 'Java code comparison'
+    githubRepo = 'github.com/jpace/diffj'
+    pkgLicense = 'Apache-2.0'
+    pkgLicenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    devInfo = {
+        id 'jpace'
+        name 'Jeff Pace'
+        url 'https://github.com/jpace'
+        email 'jeugenepace@gmail'
+    }
+    bintrayUser = System.getenv('BINTRAY_USER')
+    bintrayKey = System.getenv('BINTRAY_API_KEY')
+    mavenUserToken = System.getenv('MAVEN_USER_TOKEN')
+    mavenUserPass = System.getenv('MAVEN_USER_PASS')
+    deployDryRun = false
+}
+apply from: 'deploy.gradle'
+
+dependencies {
+    compile files('libs/pmdx-3.0.0.jar')
+    compile files('libs/ijdk-3.4.3.jar')
+    compile files('libs/jagol-1.1.0.jar')
+    compile files('libs/java-diff-1.0.0.jar')
+    compile files('libs/qualog-2.2.0.jar')
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+    testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.0.6'
+    testCompile 'org.incava:attest:[0.0.4,)'
+    testCompile 'org.hamcrest:hamcrest-library:[1.3,)'
+}
+
+allprojects {
+    tasks.withType(JavaCompile).all { JavaCompile compile ->
+        compile.options.debug = true
+        compile.options.compilerArgs = ['-Xlint:all']
+    }
+}
+
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest { attributes 'Main-Class': 'org.incava.diffj.app.DiffJ' }
+}
+
+test {
+    excludes = ['**/*TestCase*', '**/.#*', '**/ItemsTest.class', '**/OutputTest.class']
+    includes = ['**/*Test*']
+    testLogging {
+        exceptionFormat = "full"
+    }
+}
+
+logging.captureStandardOutput LogLevel.ERROR
+
+// -- PMD configuration --
+
+configurations {
+    pmdConf
+}
+
+dependencies {
+    pmdConf 'pmd:pmd:4.2.5'
+}
