@@ -9,9 +9,9 @@ package com.ueas.tia.player;
 
 import com.jcraft.jsch.SftpException;
 import com.ueas.tia.exceptions.JvmSnifferException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ public class TiaPlayer {
 
   private TargetProgramManager targetProgramManager;
   private AcceptanceTestsManager acceptanceTestsManager;
-  private JvnSnifferManager jvnSnifferManager;
+  private JvmSnifferManager jvmSnifferManager;
 
   /**
    * Constructor.
@@ -31,7 +31,7 @@ public class TiaPlayer {
   public TiaPlayer() {
     targetProgramManager = new TargetProgramManager();
     acceptanceTestsManager = new AcceptanceTestsManager();
-    jvnSnifferManager = new JvnSnifferManager();
+    jvmSnifferManager = new JvmSnifferManager();
   }
 
   /**
@@ -50,7 +50,7 @@ public class TiaPlayer {
           String methodTrace = "";
           try {
             // get the method trace file for the tag if available
-            methodTrace = jvnSnifferManager.getMethodTraceForTag(tag);
+            methodTrace = jvmSnifferManager.getMethodTraceForTag(tag);
           } catch (SftpException exception) {
             // normally this exception occurs when no file is found. 
             // This is normal when JvmSniffer never ran for this tag
@@ -86,13 +86,13 @@ public class TiaPlayer {
 
     tagsToRunSet.forEach(tagsToRun -> {
       try {
-        jvnSnifferManager.startSniffer();
+        jvmSnifferManager.startSniffer();
         // execute tests
         acceptanceTestsManager.runCucumberTest(
             Arrays.asList(tagsToRun.split("\\s")),
             "@Ignore");
-        jvnSnifferManager.stopSniffer();
-        jvnSnifferManager.renameTraceFile(tagsToRun);
+        jvmSnifferManager.stopSniffer();
+        jvmSnifferManager.renameTraceFile(tagsToRun);
         Thread.sleep(2000);
       } catch (JvmSnifferException ex) {
         throw new RuntimeException(ex);
@@ -113,7 +113,6 @@ public class TiaPlayer {
       methodChangeSet = targetProgramManager.getMethodsChanged();
       if (methodChangeSet.isEmpty()) {
         LOGGER.info("No methods are changed in the last commit. Aborting.");
-        return;
       }
 
       LOGGER.info("List of methods changed in the last commit: " + methodChangeSet.toString());
@@ -127,7 +126,6 @@ public class TiaPlayer {
         executeTestsWithSniffer(tagsToRunSet);
       } else {
         LOGGER.warn("No tags are found in the test repo. Aborting");
-        return;
       }
     } catch (Exception exception) {
       LOGGER.error(exception);

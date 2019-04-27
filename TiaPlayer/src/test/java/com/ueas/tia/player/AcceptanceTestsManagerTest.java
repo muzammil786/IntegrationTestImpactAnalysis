@@ -15,8 +15,8 @@ import com.ueas.tia.config.Configuration;
 import com.ueas.tia.config.Constants;
 import com.ueas.tia.git.GitRepositoryManager;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Ignore
+/**
+ * @TODO Apply mocking and remove hardcoded repos.
+ */
 public class AcceptanceTestsManagerTest {
   private static final Logger LOGGER = LogManager.getLogger(AcceptanceTestsManagerTest.class);
   private GitRepositoryManager repositoryManager = new GitRepositoryManager();

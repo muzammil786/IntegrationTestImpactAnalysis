@@ -14,13 +14,13 @@ import com.ueas.tia.exceptions.JvmSnifferException;
 import com.ueas.tia.utils.JSchHelper;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-public class JvnSnifferManager {
-  private static final Logger LOGGER = LogManager.getLogger(JvnSnifferManager.class);
+public class JvmSnifferManager {
+  private static final Logger LOGGER = LogManager.getLogger(JvmSnifferManager.class);
   private String jvmSnifferDir;
   private JSchHelper jschHelper;
   private String methodTraceLogFile;
@@ -28,7 +28,7 @@ public class JvnSnifferManager {
   /**
    * Constructor.
    */
-  public JvnSnifferManager() {
+  public JvmSnifferManager() {
     jschHelper = new JSchHelper(
         Configuration.getConfiguration().getProperty("target.host"),
         Configuration.getConfiguration().getProperty("target.host.user"),

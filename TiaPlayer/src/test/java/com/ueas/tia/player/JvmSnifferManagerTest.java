@@ -7,24 +7,23 @@
 
 package com.ueas.tia.player;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import com.ueas.tia.config.Configuration;
 import com.ueas.tia.utils.JSchHelper;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class JvnSnifferManagerTest {
-  private static final Logger LOGGER = LogManager.getLogger(JvnSnifferManagerTest.class);
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+@Ignore
+public class JvmSnifferManagerTest {
+  private static final Logger LOGGER = LogManager.getLogger(JvmSnifferManagerTest.class);
 
   /**
    * Reads method trace file from the remote machine.
    */
-  @Ignore
   @Test
   public void getMethodTraceForTag() {
     try {
@@ -38,7 +37,7 @@ public class JvnSnifferManagerTest {
           Configuration.getConfiguration().getProperty("jvmsniffer.output"));
 
       // read from remote server
-      JvnSnifferManager manager = new JvnSnifferManager();
+      JvmSnifferManager manager = new JvmSnifferManager();
       String file = manager.getMethodTraceForTag("@FOO");
       assertTrue(file.contains("com.ueas.ib.aftn.tcp.client.TcpClient.getTrackingUtils()"));
     } catch (Exception exception) {
@@ -50,11 +49,10 @@ public class JvnSnifferManagerTest {
   /**
    * Renames file on the remote machine.
    */
-  @Ignore
   @Test
   public void renameFile() {
     try {
-      JvnSnifferManager manager = new JvnSnifferManager();
+      JvmSnifferManager manager = new JvmSnifferManager();
       manager.renameTraceFile("@DUMMY1 @DUMMY2");
     } catch (Exception e) {
       LOGGER.error(e);
@@ -66,11 +64,10 @@ public class JvnSnifferManagerTest {
   /**
    * Starts sniffer on the remote machine.
    */
-  @Ignore
   @Test
   public void startSniffer() {
     try {
-      JvnSnifferManager manager = new JvnSnifferManager();
+      JvmSnifferManager manager = new JvmSnifferManager();
       manager.startSniffer();
 
     } catch (Exception exception) {
@@ -82,11 +79,10 @@ public class JvnSnifferManagerTest {
   /**
    * Stops sniffer on the remote machine.
    */
-  @Ignore
   @Test
   public void stopSniffer() {
     try {
-      JvnSnifferManager manager = new JvnSnifferManager();
+      JvmSnifferManager manager = new JvmSnifferManager();
       manager.stopSniffer();
 
     } catch (Exception exception) {

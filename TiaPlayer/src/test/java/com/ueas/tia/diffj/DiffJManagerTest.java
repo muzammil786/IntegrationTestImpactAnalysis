@@ -7,10 +7,11 @@
 
 package com.ueas.tia.diffj;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import java.util.Set;
@@ -28,7 +29,7 @@ public class DiffJManagerTest {
         getClass().getClassLoader().getResource(file1).getPath(), getClass()
             .getClassLoader().getResource(file2).getPath());
 
-    methods.stream().forEach(s -> LOGGER.debug(s));
+    methods.forEach(LOGGER::debug);
 
     assertTrue(methods.contains("com.ueas.tai.Sniffer.main(String)"));
     assertTrue(methods.contains("com.ueas.tai.Sniffer.startSniffing(VirtualMachine)"));
@@ -44,7 +45,7 @@ public class DiffJManagerTest {
     DiffJManager diffJManager = new DiffJManager();
     Set<String> methods = diffJManager.parseReport(report);
 
-    methods.stream().forEach(s -> LOGGER.debug(s));
+    methods.forEach(LOGGER::debug);
 
     assertTrue(methods.contains("startSniffing(VirtualMachine)"));
     assertTrue(methods.contains("main(String[])"));
@@ -57,8 +58,8 @@ public class DiffJManagerTest {
     DiffJManager diffJManager = new DiffJManager();
     Set<String> methods = diffJManager.parseReport(report);
 
-    methods.stream().forEach(s -> LOGGER.debug(s));
-    assertTrue(methods.size() == 0);
+    methods.forEach(LOGGER::debug);
+    assertEquals(0, methods.size());
   }
 
 }

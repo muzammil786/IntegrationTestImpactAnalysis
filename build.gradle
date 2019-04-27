@@ -1,43 +1,19 @@
-plugins {
-    id "com.jfrog.artifactory" version "4.1.1"
-    id 'nebula.dependency-lock' version '4.9.4'
-    id "org.sonarqube" version "2.1"
-}
+version = "1.0.2"
+description = "Root project for ${rootProject.name}."
 
-ext {
-    gradle_lib_path = "http://artifactory:8081/artifactory/configuration/gradle"
-}
-
-ext.gitProjectName = rootProject.name
-description = "Root project for ${gitProjectName}."
-
-apply from: "$gradle_lib_path/common-helpers.gradle"
-apply from: "$gradle_lib_path/artifactory.gradle"
-
-group "com.ueas.${gitProjectName}"
-// version = versionProps['module.version'] Uncomment this only for dev purposes. Otherwise passed in as gradle switch -Pversion
-//Skip artifactory publish for the root project
-artifactoryPublish.skip = true
+group "com.ueas.tai"
 
 allprojects {
-    apply plugin: 'maven-publish'
-    apply plugin: "ivy-publish"
-
-    apply plugin: 'nebula.dependency-lock'
-    apply plugin: "com.jfrog.artifactory"
-
-    repositories {
-        maven {
-            url artifactory_contextUrl + "/gradle/"
-            credentials {
-                username = artifactory_user
-                password = artifactory_password
-            }
-        }
-    }
+    apply plugin:'java'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     group = rootProject.group
     version = rootProject.version
+
+    repositories {
+        mavenCentral()
+    }
 
     // fail eagerly on version conflict (includes transitive dependencies) and enforce certain dependency versions
     configurations.all {
@@ -48,25 +24,36 @@ allprojects {
     }
 }
 
-configure(javaProjects()) {
-    apply plugin: 'idea'
-    apply plugin: 'java'
+subprojects{
+    apply plugin: 'maven-publish'
 
-
-    /*sourceSets {
-        main {
-            resources {
-                exclude '*'
-            }
-        }
-    }*/
-
-    configure(allprojects - project(':JavaDiff')) { 
-        apply from: "$gradle_lib_path/checkstyle.gradle"
-        apply from: "$gradle_lib_path/java-publications.gradle"
-//    apply from: "$gradle_lib_path/coverage.gradle"
+    dependencies {
+        compile 'org.apache.logging.log4j:log4j-core:2.11.2'
+        compile 'org.apache.logging.log4j:log4j-api:2.11.2'
+        compile 'commons-io:commons-io:2.5'
+        compile 'commons-lang:commons-lang:2.5'
+        // test
+        testCompile 'junit:junit:4.11'
+    }
+    
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        from sourceSets.main.allSource
     }
 
+    publishing {
+        publications {
+            "$project.name"(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
 
-    javadoc.setFailOnError(false) //Uncomment if non java 8 projects and only if not required.
+                artifact project.sourcesJar { // not required, includes sourcesJar with correct classifer
+                    classifier "sources"
+                }
+            }
+        }
+    }
 }
+
+
